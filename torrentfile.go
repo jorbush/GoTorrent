@@ -27,3 +27,17 @@ func Open(r io.Reader) (*bencodeTorrent, error) {
 	}
 	return &bto, nil
 }
+
+type TorrentFile struct {
+	Announce    string
+	InfoHash    [20]byte
+	PieceHashes [][20]byte
+	PieceLength int
+	Length      int
+	Name        string
+}
+
+func (bto bencodeTorrent) toTorrentFile() (TorrentFile, error) {
+	// …
+	return TorrentFile{}, nil
+}
