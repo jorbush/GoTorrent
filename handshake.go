@@ -30,7 +30,7 @@ func (h *Handshake) Serialize() []byte {
 }
 
 // Read parses a handshake from a stream
-func Read(r io.Reader) (*Handshake, error) {
+func ReadHandshake(r io.Reader) (*Handshake, error) {
 	// Do Serialize(), but backwards
 	// ...
 	return &Handshake{}, nil
