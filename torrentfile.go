@@ -1,10 +1,14 @@
 package peertopeerclient
 
 import (
-	"io"
+	"crypto/rand"
+	"os"
 
 	"github.com/jackpal/bencode-go"
 )
+
+// Port to listen on
+const Port uint16 = 6881
 
 type bencodeInfo struct {
 	Pieces      string `bencode:"pieces"`
@@ -19,13 +23,19 @@ type bencodeTorrent struct {
 }
 
 // Open parses a torrent file
-func Open(r io.Reader) (*bencodeTorrent, error) {
-	bto := bencodeTorrent{}
-	err := bencode.Unmarshal(r, &bto)
+func Open(path string) (TorrentFile, error) {
+	file, err := os.Open(path)
 	if err != nil {
-		return nil, err
+		return TorrentFile{}, err
 	}
-	return &bto, nil
+	defer file.Close()
+
+	bto := bencodeTorrent{}
+	err = bencode.Unmarshal(file, &bto)
+	if err != nil {
+		return TorrentFile{}, err
+	}
+	return bto.toTorrentFile()
 }
 
 type TorrentFile struct {
@@ -40,4 +50,43 @@ type TorrentFile struct {
 func (bto bencodeTorrent) toTorrentFile() (TorrentFile, error) {
 	// …
 	return TorrentFile{}, nil
+}
+
+// DownloadToFile downloads a torrent and writes it to a file
+func (t *TorrentFile) DownloadToFile(path string) error {
+	var peerID [20]byte
+	_, err := rand.Read(peerID[:])
+	if err != nil {
+		return err
+	}
+
+	peers, err := t.requestPeers(peerID, Port)
+	if err != nil {
+		return err
+	}
+
+	torrent := Torrent{
+		Peers:       peers,
+		PeerID:      peerID,
+		InfoHash:    t.InfoHash,
+		PieceHashes: t.PieceHashes,
+		PieceLength: t.PieceLength,
+		Length:      t.Length,
+		Name:        t.Name,
+	}
+	buf, err := torrent.Download()
+	if err != nil {
+		return err
+	}
+
+	outFile, err := os.Create(path)
+	if err != nil {
+		return err
+	}
+	defer outFile.Close()
+	_, err = outFile.Write(buf)
+	if err != nil {
+		return err
+	}
+	return nil
 }

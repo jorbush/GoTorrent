@@ -5,6 +5,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"log"
+	"runtime"
 	"time"
 )
 
@@ -161,4 +162,52 @@ func (t *Torrent) startDownloadWorker(peer Peer, workQueue chan *pieceWork, resu
 		c.SendHave(pw.index)
 		results <- &pieceResult{pw.index, buf}
 	}
+}
+
+func (t *Torrent) calculateBoundsForPiece(index int) (begin int, end int) {
+	begin = index * t.PieceLength
+	end = begin + t.PieceLength
+	if end > t.Length {
+		end = t.Length
+	}
+	return begin, end
+}
+
+func (t *Torrent) calculatePieceSize(index int) int {
+	begin, end := t.calculateBoundsForPiece(index)
+	return end - begin
+}
+
+// Download downloads the torrent. This stores the entire file in memory.
+func (t *Torrent) Download() ([]byte, error) {
+	log.Println("Starting download for", t.Name)
+	// Init queues for workers to retrieve work and send results
+	workQueue := make(chan *pieceWork, len(t.PieceHashes))
+	results := make(chan *pieceResult)
+	for index, hash := range t.PieceHashes {
+		length := t.calculatePieceSize(index)
+		workQueue <- &pieceWork{index, hash, length}
+	}
+
+	// Start workers
+	for _, peer := range t.Peers {
+		go t.startDownloadWorker(peer, workQueue, results)
+	}
+
+	// Collect results into a buffer until full
+	buf := make([]byte, t.Length)
+	donePieces := 0
+	for donePieces < len(t.PieceHashes) {
+		res := <-results
+		begin, end := t.calculateBoundsForPiece(res.index)
+		copy(buf[begin:end], res.buf)
+		donePieces++
+
+		percent := float64(donePieces) / float64(len(t.PieceHashes)) * 100
+		numWorkers := runtime.NumGoroutine() - 1 // subtract 1 for main thread
+		log.Printf("(%0.2f%%) Downloaded piece #%d from %d peers\n", percent, res.index, numWorkers)
+	}
+	close(workQueue)
+
+	return buf, nil
 }
