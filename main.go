@@ -1,4 +1,4 @@
-package peertopeerclient
+package main
 
 import (
 	"log"
