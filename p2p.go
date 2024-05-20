@@ -130,6 +130,7 @@ func (t *Torrent) startDownloadWorker(peer Peer, workQueue chan *pieceWork, resu
 	c, err := NewClient(peer, t.PeerID, t.InfoHash)
 	if err != nil {
 		log.Printf("Could not handshake with %s. Disconnecting\n", peer.IP)
+		log.Println(err)
 		return
 	}
 	defer c.Conn.Close()
