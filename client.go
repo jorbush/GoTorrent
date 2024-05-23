@@ -32,7 +32,7 @@ func completeHandshake(conn net.Conn, infohash, peerID [20]byte) (*Handshake, er
 		return nil, err
 	}
 	if !bytes.Equal(res.InfoHash[:], infohash[:]) {
-		return nil, fmt.Errorf("Expected infohash %x but got %x", res.InfoHash, infohash)
+		return nil, fmt.Errorf("expected infohash %x but got %x", res.InfoHash, infohash)
 	}
 	return res, nil
 }
@@ -46,11 +46,11 @@ func recvBitfield(conn net.Conn) (Bitfield, error) {
 		return nil, err
 	}
 	if msg == nil {
-		err := fmt.Errorf("Expected bitfield but got %s", msg)
+		err := fmt.Errorf("expected bitfield but got %v", msg)
 		return nil, err
 	}
 	if msg.ID != MsgBitfield {
-		err := fmt.Errorf("Expected bitfield but got ID %d", msg.ID)
+		err := fmt.Errorf("expected bitfield but got ID %d", msg.ID)
 		return nil, err
 	}
 
