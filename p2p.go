@@ -15,17 +15,6 @@ const MaxBlockSize = 16384
 // MaxBacklog is the number of unfulfilled requests a client can have in its pipeline
 const MaxBacklog = 5
 
-// Torrent holds data required to download a torrent from a list of peers
-type Torrent struct {
-	Peers       []Peer
-	PeerID      [20]byte
-	InfoHash    [20]byte
-	PieceHashes [][20]byte
-	PieceLength int
-	Length      int
-	Name        string
-}
-
 type pieceWork struct {
 	index  int
 	hash   [20]byte

@@ -25,6 +25,26 @@ type bencodeTorrent struct {
 	Info     bencodeInfo `bencode:"info"`
 }
 
+type TorrentFile struct {
+	Announce    string
+	InfoHash    [20]byte
+	PieceHashes [][20]byte
+	PieceLength int
+	Length      int
+	Name        string
+}
+
+// Torrent holds data required to download a torrent from a list of peers
+type Torrent struct {
+	Peers       []Peer
+	PeerID      [20]byte
+	InfoHash    [20]byte
+	PieceHashes [][20]byte
+	PieceLength int
+	Length      int
+	Name        string
+}
+
 // Open parses a torrent file
 func Open(path string) (TorrentFile, error) {
 	file, err := os.Open(path)
@@ -39,15 +59,6 @@ func Open(path string) (TorrentFile, error) {
 		return TorrentFile{}, err
 	}
 	return bto.toTorrentFile()
-}
-
-type TorrentFile struct {
-	Announce    string
-	InfoHash    [20]byte
-	PieceHashes [][20]byte
-	PieceLength int
-	Length      int
-	Name        string
 }
 
 func (i *bencodeInfo) hash() ([20]byte, error) {
