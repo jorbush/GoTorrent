@@ -6,6 +6,7 @@ import (
 	"crypto/sha1"
 	"fmt"
 	"os"
+	"p2p/bittorrent/network"
 
 	"github.com/jackpal/bencode-go"
 )
@@ -36,7 +37,7 @@ type TorrentFile struct {
 
 // Torrent holds data required to download a torrent from a list of peers
 type Torrent struct {
-	Peers       []Peer
+	Peers       []network.Peer
 	PeerID      [20]byte
 	InfoHash    [20]byte
 	PieceHashes [][20]byte

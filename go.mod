@@ -1,4 +1,4 @@
-module peer-to-peer-client
+module p2p
 
 go 1.22.2
 

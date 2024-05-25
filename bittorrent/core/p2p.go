@@ -1,10 +1,12 @@
-package network
+package core
 
 import (
 	"bytes"
 	"crypto/sha1"
 	"fmt"
 	"log"
+	"p2p/bittorrent/network"
+	"p2p/ui"
 	"runtime"
 	"time"
 )
@@ -46,18 +48,18 @@ func (state *pieceProgress) readMessage() error {
 	}
 
 	switch msg.ID {
-	case MsgUnchoke:
+	case network.MsgUnchoke:
 		state.client.Choked = false
-	case MsgChoke:
+	case network.MsgChoke:
 		state.client.Choked = true
-	case MsgHave:
-		index, err := ParseHave(msg)
+	case network.MsgHave:
+		index, err := network.ParseHave(msg)
 		if err != nil {
 			return err
 		}
 		state.client.Bitfield.SetPiece(index)
-	case MsgPiece:
-		n, err := ParsePiece(state.index, state.buf, msg)
+	case network.MsgPiece:
+		n, err := network.ParsePiece(state.index, state.buf, msg)
 		if err != nil {
 			return err
 		}
@@ -115,7 +117,7 @@ func checkIntegrity(pw *pieceWork, buf []byte) error {
 	return nil
 }
 
-func (t *Torrent) startDownloadWorker(peer Peer, workQueue chan *pieceWork, results chan *pieceResult) {
+func (t *Torrent) startDownloadWorker(peer network.Peer, workQueue chan *pieceWork, results chan *pieceResult) {
 	c, err := NewClient(peer, t.PeerID, t.InfoHash)
 	if err != nil {
 		log.Printf("Could not handshake with %s. Disconnecting\n", peer.IP)
@@ -177,7 +179,7 @@ func (t *Torrent) Download() ([]byte, error) {
 	results := make(chan *pieceResult)
 
 	// Initialize the progress bar
-	pb := NewPBar()
+	pb := ui.NewPBar()
 	pb.SignalHandler()
 	pb.Total = uint16(100)
 

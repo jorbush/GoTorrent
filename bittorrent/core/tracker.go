@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"p2p/bittorrent/network"
 	"strconv"
 	"time"
 
@@ -35,7 +36,7 @@ func (t *TorrentFile) buildTrackerURL(peerID [20]byte, port uint16) (string, err
 	return base.String(), nil
 }
 
-func (t *TorrentFile) requestPeers(peerID [20]byte, port uint16) ([]Peer, error) {
+func (t *TorrentFile) requestPeers(peerID [20]byte, port uint16) ([]network.Peer, error) {
 	url, err := t.buildTrackerURL(peerID, port)
 	if err != nil {
 		return nil, err
@@ -56,5 +57,5 @@ func (t *TorrentFile) requestPeers(peerID [20]byte, port uint16) ([]Peer, error)
 		return nil, err
 	}
 
-	return Unmarshal([]byte(trackerResp.Peers))
+	return network.Unmarshal([]byte(trackerResp.Peers))
 }

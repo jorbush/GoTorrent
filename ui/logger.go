@@ -1,4 +1,4 @@
-package main
+package ui
 
 import (
 	"fmt"
@@ -8,8 +8,8 @@ import (
 	"time"
 )
 
-// setupLogger sets up the logger to write to a file in the logs directory
-func setupLogger() (*os.File, error) {
+// SetupLogger sets up the logger to write to a file in the logs directory
+func SetupLogger() (*os.File, error) {
 	// Create the logs directory if it doesn't exist
 	logDir := "logs"
 	err := os.MkdirAll(logDir, 0755)
