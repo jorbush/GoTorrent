@@ -33,3 +33,5 @@ jobs:
             echo "Output file not found."
             exit 1
           fi
+      - name: Display logs
+        run: cat logs/*.txt
