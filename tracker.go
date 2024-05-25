@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"log"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -17,7 +17,7 @@ type bencodeTrackerResp struct {
 
 func (t *TorrentFile) buildTrackerURL(peerID [20]byte, port uint16) (string, error) {
 	base, err := url.Parse(t.Announce)
-	fmt.Println("Url = ", t.Announce)
+	log.Println("Url = ", t.Announce)
 
 	if err != nil {
 		return "", err
@@ -42,7 +42,7 @@ func (t *TorrentFile) requestPeers(peerID [20]byte, port uint16) ([]Peer, error)
 	}
 
 	c := &http.Client{Timeout: 15 * time.Second}
-	fmt.Println("Url = ", url)
+	log.Println("Url = ", url)
 
 	resp, err := c.Get(url)
 	if err != nil {
