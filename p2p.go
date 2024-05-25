@@ -174,6 +174,12 @@ func (t *Torrent) Download() ([]byte, error) {
 	// Init queues for workers to retrieve work and send results
 	workQueue := make(chan *pieceWork, len(t.PieceHashes))
 	results := make(chan *pieceResult)
+
+	// Initialize the progress bar
+	pb := NewPBar()
+	pb.SignalHandler()
+	pb.Total = uint16(100)
+
 	for index, hash := range t.PieceHashes {
 		length := t.calculatePieceSize(index)
 		workQueue <- &pieceWork{index, hash, length}
@@ -193,11 +199,15 @@ func (t *Torrent) Download() ([]byte, error) {
 		copy(buf[begin:end], res.buf)
 		donePieces++
 
-		percent := float64(donePieces) / float64(len(t.PieceHashes)) * 100
-		numWorkers := runtime.NumGoroutine() - 1 // subtract 1 for main thread
-		log.Printf("(%0.2f%%) Downloaded piece #%d from %d peers\n", percent, res.index, numWorkers)
+		percent := float64(donePieces) / float64(len(t.PieceHashes)) * 100 // Convert percent to float64
+		numWorkers := runtime.NumGoroutine() - 1                           // subtract 1 for main thread
+
+		// log.Printf("(%0.2f%%) Downloaded piece #%d from %d peers\n", percent, res.index, numWorkers)
+		// bar.Describe(fmt.Sprintf("(%0.2f%%) Downloaded piece #%d | Active workers: %d", percent, res.index, numWorkers))
+		pb.RenderPBar(percent, res.index, numWorkers)
 	}
 	close(workQueue)
-
+	pb.CleanUp()
+	fmt.Printf("\nFile %s downloaded!\nCheck the output directory.\n", t.Name)
 	return buf, nil
 }
