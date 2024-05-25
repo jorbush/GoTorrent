@@ -202,8 +202,8 @@ func (t *Torrent) Download() ([]byte, error) {
 		percent := float64(donePieces) / float64(len(t.PieceHashes)) * 100 // Convert percent to float64
 		numWorkers := runtime.NumGoroutine() - 1                           // subtract 1 for main thread
 
-		// log.Printf("(%0.2f%%) Downloaded piece #%d from %d peers\n", percent, res.index, numWorkers)
-		// bar.Describe(fmt.Sprintf("(%0.2f%%) Downloaded piece #%d | Active workers: %d", percent, res.index, numWorkers))
+		// Save into a logs file
+		log.Printf("(%0.2f%%) Downloaded piece #%d from %d peers\n", percent, res.index, numWorkers)
 		pb.RenderPBar(percent, res.index, numWorkers)
 	}
 	close(workQueue)
