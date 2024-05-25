@@ -1,9 +1,9 @@
-.PHONY: install run clean-logs
+.PHONY: install run clean-logs debian-test
 
 install:
 	go mod tidy
 
-run:
+debian-test:
 	go run *.go input/debian.torrent output/debian.iso
 
 clean-logs:
