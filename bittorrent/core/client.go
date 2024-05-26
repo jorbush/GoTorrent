@@ -3,6 +3,7 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"log"
 	"net"
 	"p2p/bittorrent/network"
 	"p2p/bittorrent/utils"
@@ -20,8 +21,15 @@ type Client struct {
 }
 
 func completeHandshake(conn net.Conn, infohash, peerID [20]byte) (*network.Handshake, error) {
-	conn.SetDeadline(time.Now().Add(3 * time.Second))
-	defer conn.SetDeadline(time.Time{}) // Disable the deadline
+	if err := conn.SetDeadline(time.Now().Add(3 * time.Second)); err != nil {
+		log.Printf("Failed to set deadline: %v", err)
+	}
+
+	defer func() {
+		if err := conn.SetDeadline(time.Time{}); err != nil {
+			log.Printf("Failed to reset deadline: %v", err)
+		}
+	}()
 
 	req := network.NewHandshake(infohash, peerID)
 	_, err := conn.Write(req.Serialize())
@@ -40,8 +48,14 @@ func completeHandshake(conn net.Conn, infohash, peerID [20]byte) (*network.Hands
 }
 
 func recvBitfield(conn net.Conn) (utils.Bitfield, error) {
-	conn.SetDeadline(time.Now().Add(5 * time.Second))
-	defer conn.SetDeadline(time.Time{}) // Disable the deadline
+	if err := conn.SetDeadline(time.Now().Add(5 * time.Second)); err != nil {
+		log.Printf("Failed to set deadline: %v", err)
+	}
+	defer func() {
+		if err := conn.SetDeadline(time.Time{}); err != nil {
+			log.Printf("Failed to reset deadline: %v", err)
+		}
+	}() // Disable the deadline
 
 	msg, err := network.ReadMessage(conn)
 	if err != nil {

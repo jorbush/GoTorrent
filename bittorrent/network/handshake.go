@@ -27,16 +27,14 @@ func (h *Handshake) Serialize() []byte {
 	buf := make([]byte, len(h.Pstr)+49)
 	// The first byte indicates the length of the protocol identifier
 	buf[0] = byte(len(h.Pstr))
-	// Initialize a variable to keep track of the current position in the buffer
-	curr := 1
 	// Copy the protocol identifier (Pstr) into the buffer
-	curr += copy(buf[curr:], h.Pstr)
+	copy(buf[1:], h.Pstr)
 	// Copy 8 reserved bytes (all set to 0) into the buffer
-	curr += copy(buf[curr:], make([]byte, 8)) // 8 reserved bytes
+	copy(buf[1+len(h.Pstr):], make([]byte, 8)) // 8 reserved bytes
 	// Copy the infohash into the buffer
-	curr += copy(buf[curr:], h.InfoHash[:])
+	copy(buf[1+len(h.Pstr)+8:], h.InfoHash[:])
 	// Copy the peer ID into the buffer
-	curr += copy(buf[curr:], h.PeerID[:])
+	copy(buf[1+len(h.Pstr)+8+20:], h.PeerID[:])
 	// Return the serialized buffer
 	return buf
 }

@@ -1,4 +1,4 @@
-.PHONY: install run clean-logs debian-test
+.PHONY: install run clean-logs debian-test linter
 
 install:
 	go mod tidy
@@ -9,3 +9,6 @@ debian-test:
 clean-logs:
 	rm -rf logs
 	mkdir logs
+
+linter:
+	golangci-lint run

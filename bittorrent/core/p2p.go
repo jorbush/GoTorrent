@@ -78,8 +78,15 @@ func attemptDownloadPiece(c *Client, pw *pieceWork) ([]byte, error) {
 
 	// Setting a deadline helps get unresponsive peers unstuck.
 	// 30 seconds is more than enough time to download a 262 KB piece
-	c.Conn.SetDeadline(time.Now().Add(30 * time.Second))
-	defer c.Conn.SetDeadline(time.Time{}) // Disable the deadline
+	if err := c.Conn.SetDeadline(time.Now().Add(30 * time.Second)); err != nil {
+		log.Printf("Failed to set deadline: %v", err)
+	}
+
+	defer func() {
+		if err := c.Conn.SetDeadline(time.Time{}); err != nil {
+			log.Printf("Failed to reset deadline: %v", err)
+		}
+	}()
 
 	for state.downloaded < pw.length {
 		// If unchoked, send requests until we have enough unfulfilled requests
@@ -127,8 +134,13 @@ func (t *Torrent) startDownloadWorker(peer network.Peer, workQueue chan *pieceWo
 	defer c.Conn.Close()
 	log.Printf("Completed handshake with %s\n", peer.IP)
 
-	c.SendUnchoke()
-	c.SendInterested()
+	if err := c.SendUnchoke(); err != nil {
+		log.Printf("Failed to send unchoke: %v", err)
+	}
+
+	if err := c.SendInterested(); err != nil {
+		log.Printf("Failed to send interested: %v", err)
+	}
 
 	for pw := range workQueue {
 		if !c.Bitfield.HasPiece(pw.index) {
@@ -151,7 +163,9 @@ func (t *Torrent) startDownloadWorker(peer network.Peer, workQueue chan *pieceWo
 			continue
 		}
 
-		c.SendHave(pw.index)
+		if err := c.SendHave(pw.index); err != nil {
+			log.Printf("Failed to send have: %v", err)
+		}
 		results <- &pieceResult{pw.index, buf}
 	}
 }
