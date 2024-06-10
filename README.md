@@ -13,7 +13,9 @@ curl -o input/debian.torrent https://cdimage.debian.org/debian-cd/current/amd64/
 Run the client:
 
 ```bash
-make debian-test
+make run
 ```
+
+This will download the content of the torrent file saved in `input` directory. In this case, the debian image.
 
 You will found the downloaded file in the `output` directory.
