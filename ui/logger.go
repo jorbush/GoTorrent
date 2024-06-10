@@ -18,7 +18,7 @@ func SetupLogger() (*os.File, error) {
 	}
 
 	// Generate the log file name based on the current date and time
-	logFileName := fmt.Sprintf("log_%s.txt", time.Now().Format("2006-01-02_15-04-05"))
+	logFileName := fmt.Sprintf("%s.log", time.Now().Format("2006-01-02_15-04-05"))
 	logFilePath := filepath.Join(logDir, logFileName)
 
 	// Create or open the log file

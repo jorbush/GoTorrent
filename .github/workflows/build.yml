@@ -34,4 +34,4 @@ jobs:
             exit 1
           fi
       - name: Display logs
-        run: cat logs/*.txt
+        run: cat logs/*.log
