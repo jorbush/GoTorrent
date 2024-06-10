@@ -23,11 +23,11 @@ jobs:
         run: curl -o input/debian.torrent https://cdimage.debian.org/debian-cd/current/amd64/bt-cd/debian-12.5.0-amd64-netinst.iso.torrent
 
       - name: Build and run app
-        run: make debian-test
+        run: make run
 
       - name: Check output
         run: |
-          if [ -f "output/*.iso" ]; then
+          if [ -f "output/debian-12.5.0-amd64-netinst.iso" ]; then
             echo "Output file exists."
           else
             echo "Output file not found."
