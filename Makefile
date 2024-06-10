@@ -4,7 +4,7 @@ install:
 	go mod tidy
 
 debian-test:
-	go run *.go input/debian.torrent output/debian.iso
+	go run *.go input/*.torrent output/debian.iso
 
 clean-logs:
 	rm -rf logs

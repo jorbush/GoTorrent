@@ -10,7 +10,6 @@ import (
 
 func main() {
 	inPath := os.Args[1]
-	outPath := os.Args[2]
 
 	logFile, err := ui.SetupLogger()
 	if err != nil {
@@ -24,7 +23,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	err = tf.DownloadToFile(outPath)
+	err = tf.DownloadTorrent()
 	if err != nil {
 		log.Fatal(err)
 	}

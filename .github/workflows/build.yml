@@ -1,4 +1,4 @@
-name: Build and Test
+name: Download Debian ISO Test
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
 
       - name: Check output
         run: |
-          if [ -f "output/debian.iso" ]; then
+          if [ -f "output/*.iso" ]; then
             echo "Output file exists."
           else
             echo "Output file not found."

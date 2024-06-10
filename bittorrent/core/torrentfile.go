@@ -108,8 +108,8 @@ func (bto *bencodeTorrent) toTorrentFile() (TorrentFile, error) {
 	return t, nil
 }
 
-// DownloadToFile downloads a torrent and writes it to a file
-func (t *TorrentFile) DownloadToFile(path string) error {
+// DownloadFile downloads a torrent and writes it
+func (t *TorrentFile) DownloadTorrent() error {
 	var peerID [20]byte
 	_, err := rand.Read(peerID[:])
 	if err != nil {
@@ -135,7 +135,7 @@ func (t *TorrentFile) DownloadToFile(path string) error {
 		return err
 	}
 
-	outFile, err := os.Create(path)
+	outFile, err := os.Create("output/" + torrent.Name)
 	if err != nil {
 		return err
 	}
