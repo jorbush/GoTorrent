@@ -6,6 +6,7 @@ import (
 	"os"
 	"p2p/bittorrent/core"
 	"p2p/ui"
+	"time"
 )
 
 func main() {
@@ -23,8 +24,19 @@ func main() {
 		log.Fatal(err)
 	}
 
+	startTime := time.Now()
+	log.Printf("Timer started.\n")
+
 	err = tf.DownloadTorrent()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	duration := time.Since(startTime)
+
+	minutes := int(duration.Minutes())
+	seconds := int(duration.Seconds()) % 60
+
+	fmt.Printf("Download completed in %d minutes and %d seconds.\n", minutes, seconds)
+	log.Printf("Downloaded in %v \n", duration)
 }
