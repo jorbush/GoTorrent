@@ -15,7 +15,16 @@ import (
 const MaxBlockSize = 16384
 
 // MaxBacklog is the number of unfulfilled requests a client can have in its pipeline
-const MaxBacklog = 5
+const (
+	InitialBacklog = 5  // Initial number of unfulfilled requests
+	MaxBacklog     = 50 // Max number of unfulfilled requests
+	MinBacklog     = 1  // Min number of unfulfilled requests
+)
+
+var (
+	backlog     = InitialBacklog
+	backlogStep = 5 // Number of unfulfilled requests to add/subtract
+)
 
 type pieceWork struct {
 	index  int
@@ -69,6 +78,16 @@ func (state *pieceProgress) readMessage() error {
 	return nil
 }
 
+func adjustBacklog(success bool) {
+	if success && backlog < MaxBacklog {
+		backlog += backlogStep
+		log.Printf("Increased backlog to %d\n", backlog)
+	} else if !success && backlog > MinBacklog {
+		backlog -= backlogStep
+		log.Printf("Decreased backlog to %d\n", backlog)
+	}
+}
+
 func attemptDownloadPiece(c *Client, pw *pieceWork) ([]byte, error) {
 	state := pieceProgress{
 		index:  pw.index,
@@ -91,7 +110,7 @@ func attemptDownloadPiece(c *Client, pw *pieceWork) ([]byte, error) {
 	for state.downloaded < pw.length {
 		// If unchoked, send requests until we have enough unfulfilled requests
 		if !state.client.Choked {
-			for state.backlog < MaxBacklog && state.requested < pw.length {
+			for state.backlog < backlog && state.requested < pw.length {
 				blockSize := MaxBlockSize
 				// Last block might be shorter than the typical block
 				if pw.length-state.requested < blockSize {
@@ -100,6 +119,7 @@ func attemptDownloadPiece(c *Client, pw *pieceWork) ([]byte, error) {
 
 				err := c.SendRequest(pw.index, state.requested, blockSize)
 				if err != nil {
+					adjustBacklog(false)
 					return nil, err
 				}
 				state.backlog++
@@ -109,8 +129,10 @@ func attemptDownloadPiece(c *Client, pw *pieceWork) ([]byte, error) {
 
 		err := state.readMessage()
 		if err != nil {
+			adjustBacklog(false)
 			return nil, err
 		}
+		adjustBacklog(true)
 	}
 
 	return state.buf, nil
