@@ -10,5 +10,5 @@ clean-logs:
 	rm -rf logs
 	mkdir logs
 
-linter:
+lint:
 	golangci-lint run
