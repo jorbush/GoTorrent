@@ -1,4 +1,4 @@
-# P2P Client
+# GoTorrent
 
 A BitTorrent client implementation in Go, designed to download files efficiently using the BitTorrent protocol.
 
