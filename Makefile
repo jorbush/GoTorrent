@@ -4,7 +4,7 @@ install:
 	go mod tidy
 
 start-cli:
-	go run *.go input/*.torrent
+	go run -ldflags="-extldflags=-Wl,-no_warn_duplicate_libraries" main.go input/*.torrent
 
 start-ui:
 	go run -ldflags="-extldflags=-Wl,-no_warn_duplicate_libraries" main.go -ui
