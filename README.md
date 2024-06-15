@@ -14,7 +14,7 @@ Run the following command to install the project dependencies:
 make install
 ```
 
-## Usage APP UI
+## Usage UI
 
 ### Run the App
 
@@ -23,6 +23,10 @@ Run the client using the make command:
 ```bash
 make start-ui
 ```
+
+You can drag and drop a torrent file into the app to start downloading the content or select a file using the `Browse` button.
+
+Once the download is complete, the downloaded file will be saved in the `output` directory.
 
 ## Usage CLI
 
