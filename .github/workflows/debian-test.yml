@@ -19,6 +19,9 @@ jobs:
       - name: Install curl
         run: sudo apt-get update && sudo apt-get install -y curl
 
+      - name: Install OpenGL & X11
+        run: sudo apt-get update && sudo apt-get install libgl1-mesa-dev xorg-dev
+
       - name: Download Debian torrent
         run: curl -o input/debian.torrent https://cdimage.debian.org/debian-cd/current/amd64/bt-cd/debian-12.5.0-amd64-netinst.iso.torrent
 
