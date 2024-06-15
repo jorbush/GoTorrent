@@ -2,6 +2,9 @@
 
 A BitTorrent client implementation in Go, designed to download files efficiently using the BitTorrent protocol.
 
+https://github.com/jorbush/GoTorrent/assets/55429631/7a94b1c8-89bf-4831-8ff6-bf6baaf20fe2
+
+
 ## Requirements
 
 - [Go](https://golang.org/doc/install)
