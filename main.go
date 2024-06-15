@@ -40,7 +40,7 @@ func startUI() {
 	isDownloading := false
 	myApp := app.New()
 	myWindow := myApp.NewWindow("GoTorrent")
-	myWindow.Resize(fyne.NewSize(600, 400)) // Ajusta el tamaño inicial de la ventana
+	myWindow.Resize(fyne.NewSize(600, 400))
 
 	label := widget.NewLabel("Drag and drop a torrent file or click to browse")
 	fileEntry := widget.NewEntry()
@@ -83,8 +83,7 @@ func startUI() {
 		}()
 	})
 
-	// Implement drag and drop
-	dropArea := canvas.NewRectangle(&color.RGBA{R: 200, G: 200, B: 200, A: 255})
+	dropArea := canvas.NewRectangle(&color.NRGBA{R: 0, G: 0, B: 0, A: 0})
 	dropArea.SetMinSize(fyne.NewSize(400, 200))
 	dropLabel := widget.NewLabel("Drop .torrent file here")
 
@@ -97,7 +96,7 @@ func startUI() {
 		}
 	})
 
-	content := container.NewVBox(label, fileEntry, fileButton, startButton, dropContainer)
+	content := container.NewVBox(label, fileEntry, dropContainer, fileButton, startButton)
 	myWindow.SetContent(content)
 	myWindow.ShowAndRun()
 }
