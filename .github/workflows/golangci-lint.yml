@@ -9,8 +9,6 @@ on:
 
 permissions:
   contents: read
-  # Optional: allow read access to pull request. Use with `only-new-issues` option.
-  # pull-requests: read
 
 jobs:
   golangci:
@@ -21,7 +19,19 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.22'
+      - name: Cache Go modules
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: Install OpenGL & X11
+        run: sudo apt-get update && sudo apt-get install -y libgl1-mesa-dev xorg-dev
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.58
+          args: --timeout 5m
