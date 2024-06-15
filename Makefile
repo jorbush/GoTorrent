@@ -7,14 +7,14 @@ install:
 
 start-cli:
 ifeq ($(OS),Linux)
-	go run -ldflags="-extldflags=-Wl,--no-warn-duplicate-libraries" main.go input/*.torrent
+	go run main.go input/*.torrent
 else
 	go run -ldflags="-extldflags -Wl,-no_warn_duplicate_libraries" main.go input/*.torrent
 endif
 
 start-ui:
 ifeq ($(OS),Linux)
-	go run -ldflags="-extldflags=-Wl,--no-warn-duplicate-libraries" main.go -ui
+	go run main.go -ui
 else
 	go run -ldflags="-extldflags -Wl,-no_warn_duplicate_libraries" main.go -ui
 endif
