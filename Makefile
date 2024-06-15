@@ -1,23 +1,13 @@
-.PHONY: install start-cli start-ui clean-logs lint
-
-OS := $(shell uname -s)
+.PHONY: install start-cli start-ui clean-logs debian-test linter
 
 install:
 	go mod tidy
 
 start-cli:
-ifeq ($(OS),Linux)
-	go run -ldflags="-extldflags=-Wl,--no_warn_duplicate_libraries" main.go input/*.torrent
-else
-	go run -ldflags="-extldflags -Wl,-no_warn_duplicate_libraries" main.go input/*.torrent
-endif
+	go run -ldflags="-extldflags=-Wl,-no_warn_duplicate_libraries" main.go input/*.torrent
 
 start-ui:
-ifeq ($(OS),Linux)
-	go run -ldflags="-extldflags=-Wl,--no_warn_duplicate_libraries" main.go -ui
-else
-	go run -ldflags="-extldflags -Wl,-no_warn_duplicate_libraries" main.go -ui
-endif
+	go run -ldflags="-extldflags=-Wl,-no_warn_duplicate_libraries" main.go -ui
 
 clean-logs:
 	rm -rf logs
