@@ -7,7 +7,7 @@ start-cli:
 	go run *.go input/*.torrent
 
 start-ui:
-	go run main.go -ui
+	go run -ldflags="-extldflags=-Wl,-no_warn_duplicate_libraries" main.go -ui
 
 clean-logs:
 	rm -rf logs
