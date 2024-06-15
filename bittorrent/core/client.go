@@ -3,10 +3,10 @@ package core
 import (
 	"bytes"
 	"fmt"
+	"gotorrent/bittorrent/network"
+	"gotorrent/bittorrent/utils"
 	"log"
 	"net"
-	"p2p/bittorrent/network"
-	"p2p/bittorrent/utils"
 	"time"
 )
 

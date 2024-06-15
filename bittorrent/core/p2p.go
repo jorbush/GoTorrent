@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"crypto/sha1"
 	"fmt"
+	"gotorrent/bittorrent/network"
+	"gotorrent/ui"
 	"log"
-	"p2p/bittorrent/network"
-	"p2p/ui"
 	"runtime"
 	"time"
 )

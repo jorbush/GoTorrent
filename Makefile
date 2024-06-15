@@ -1,10 +1,13 @@
-.PHONY: install run clean-logs debian-test linter
+.PHONY: install start-cli start-ui clean-logs debian-test linter
 
 install:
 	go mod tidy
 
-run:
+start-cli:
 	go run *.go input/*.torrent
+
+start-ui:
+	go run main.go -ui
 
 clean-logs:
 	rm -rf logs

@@ -6,7 +6,25 @@ A BitTorrent client implementation in Go, designed to download files efficiently
 
 - [Go](https://golang.org/doc/install)
 
-## Usage
+## Installation
+
+Run the following command to install the project dependencies:
+
+```bash
+make install
+```
+
+## Usage APP UI
+
+### Run the App
+
+Run the client using the make command:
+
+```bash
+make start-ui
+```
+
+## Usage CLI
 
 ### Download a Torrent File
 
@@ -15,11 +33,12 @@ Download a torrent file, for example, the Debian installation image:
 ```bash
 curl -o input/debian.torrent https://cdimage.debian.org/debian-cd/current/amd64/bt-cd/debian-12.5.0-amd64-netinst.iso.torrent
 ```
-### Run the Client
+### Run CLI
+
 Run the client using the make command:
 
 ```bash
-make run
+make start-cli
 ```
 
 This command will start the BitTorrent client, which will download the content of the torrent file saved in the `input` directory. For example, the Debian image.

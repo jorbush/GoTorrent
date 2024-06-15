@@ -5,8 +5,8 @@ import (
 	"crypto/rand"
 	"crypto/sha1"
 	"fmt"
+	"gotorrent/bittorrent/network"
 	"os"
-	"p2p/bittorrent/network"
 
 	"github.com/jackpal/bencode-go"
 )

@@ -1,10 +1,10 @@
 package core
 
 import (
+	"gotorrent/bittorrent/network"
 	"log"
 	"net/http"
 	"net/url"
-	"p2p/bittorrent/network"
 	"strconv"
 	"time"
 
