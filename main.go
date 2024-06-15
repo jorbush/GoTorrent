@@ -63,6 +63,9 @@ func startUI() {
 		fileDialog.Show()
 	})
 
+	loader := widget.NewProgressBarInfinite()
+	loader.Hide()
+
 	startButton := widget.NewButton("Start Download", func() {
 		if isDownloading {
 			dialog.ShowInformation("Download in Progress", "A download is already in progress", myWindow)
@@ -77,8 +80,12 @@ func startUI() {
 		}
 
 		isDownloading = true
+		loader.Show()
 		go func() {
-			defer func() { isDownloading = false }()
+			defer func() {
+				isDownloading = false
+				loader.Hide()
+			}()
 			startDownload(filePath, myWindow)
 		}()
 	})
@@ -96,7 +103,7 @@ func startUI() {
 		}
 	})
 
-	content := container.NewVBox(label, fileEntry, dropContainer, fileButton, startButton)
+	content := container.NewVBox(label, fileEntry, dropContainer, fileButton, startButton, loader)
 	myWindow.SetContent(content)
 	myWindow.ShowAndRun()
 }
